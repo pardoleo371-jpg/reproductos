@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Reproductor de Música</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#141e30,#243b55);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.player{
+    width:350px;
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+h1{
+    color:#243b55;
+    margin-bottom:15px;
+}
+
+#songName{
+    margin:15px 0;
+    font-size:18px;
+    font-weight:bold;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:18px;
+    background:#243b55;
+    color:white;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+input[type="range"]{
+    width:100%;
+    margin:10px 0;
+}
+
+.playlist{
+    margin-top:20px;
+    text-align:left;
+}
+
+.playlist ul{
+    list-style:none;
+}
+
+.playlist li{
+    padding:8px;
+    cursor:pointer;
+    border-bottom:1px solid #ddd;
+}
+
+.playlist li:hover{
+    background:#f0f0f0;
+}
+</style>
+</head>
+<body>
+
+<div class="player">
+
+    <h1>🎵 Mi Música</h1>
+
+    <p id="songName">Selecciona una canción</p>
+
+    <audio id="audio"></audio>
+
+    <input type="range" id="progress" value="0">
+
+    <div>
+        <button onclick="anterior()">⏮</button>
+        <button onclick="playPause()">▶ / ⏸</button>
+        <button onclick="siguiente()">⏭</button>
+    </div>
+
+    <div class="playlist">
+        <h3>Lista de canciones</h3>
+        <ul id="lista"></ul>
+    </div>
+
+</div>
+
+<script>
+
+const canciones = [
+    {
+        nombre: "Canción 1",
+        archivo: "musica/1.mp3"
+    },
+    {
+        nombre: "Canción 2",
+        archivo: "musica/2.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 3",
+        archivo: "musica/3.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 4",
+        archivo: "musica/4.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 5",
+        archivo: "musica/5.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 6",
+        archivo: "musica/6.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 7",
+        archivo: "musica/7.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 8",
+        archivo: "musica/8.mp3"
+    },
+    ,
+    {
+        nombre: "Canción 9",
+        archivo: "musica/9.mp3"
+    },
+    {
+        nombre: "Canción 10",
+        archivo: "musica/10.mp3"
+    }
+];
+
+const audio = document.getElementById("audio");
+const songName = document.getElementById("songName");
+const progress = document.getElementById("progress");
+const lista = document.getElementById("lista");
+
+let indice = 0;
+
+function cargarCancion(i){
+    indice = i;
+    audio.src = canciones[i].archivo;
+    songName.textContent = canciones[i].nombre;
+}
+
+function playPause(){
+    if(audio.paused){
+        audio.play();
+    }else{
+        audio.pause();
+    }
+}
+
+function siguiente(){
+    indice++;
+    if(indice >= canciones.length){
+        indice = 0;
+    }
+    cargarCancion(indice);
+    audio.play();
+}
+
+function anterior(){
+    indice--;
+    if(indice < 0){
+        indice = canciones.length - 1;
+    }
+    cargarCancion(indice);
+    audio.play();
+}
+
+audio.addEventListener("timeupdate",()=>{
+    progress.max = audio.duration;
+    progress.value = audio.currentTime;
+});
+
+progress.addEventListener("input",()=>{
+    audio.currentTime = progress.value;
+});
+
+audio.addEventListener("ended",()=>{
+    siguiente();
+});
+
+canciones.forEach((cancion,index)=>{
+    const li = document.createElement("li");
+    li.textContent = cancion.nombre;
+    li.onclick = ()=>{
+        cargarCancion(index);
+        audio.play();
+    };
+    lista.appendChild(li);
+});
+
+cargarCancion(0);
+
+</script>
+
+</body>
+</html>
